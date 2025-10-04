@@ -192,6 +192,15 @@ function Player:update(dt)
         end
     end
 
+    if self.collider:enter('Enemy') then
+        local collision_data = self.collider:getEnterCollisionData('Enemy')
+        local object = collision_data.collider:getObject()
+
+        if object then
+            self:hit(30)
+        end
+    end
+
     -- Boost
     self.boost = math.min(self.boost + 10*dt, self.max_boost)
     self.boost_timer = self.boost_timer + dt
@@ -341,6 +350,31 @@ function Player:setAttack(attack)
     self.ammo = self.max_ammo
 end
 
+function Player:hit(damage)
+    if self.invincible then return end
+    damage = damage or 10
+
+    for i = 1, love.math.random(4, 8) do
+        self.area:addGameObject('ExplodeParticle', self.x, self.y)
+    end
+    self:removeHp(damage)
+
+    if damage >= 30 then
+        self.invincible = true
+        self.timer:after('invincibility', 2, function() self.invincible = false end)
+        for i = 1, 50 do self.timer:after((i-1)*0.04, function() self.invinsible = not self.invisible end) end
+        self.timer:after(51*0.04, function() self.invisible = false end)
+
+        camera:shake(6, 60, 0.2)
+        flash(3)
+        slow(0.25, 0.5)
+    else
+        camera:shake(3, 60, 0.1)
+        flash(2)
+        slow(0.75, 0.25)
+    end
+end
+
 function Player:die()
     self.dead = true
     flash(4)
@@ -362,6 +396,14 @@ end
 
 function Player:addHp(amount)
     self.hp = math.min(self.hp + amount, self.max_hp)
+end
+
+function Player:removeHp(amount)
+    self.hp = self.hp - (amount or 5)
+    if self.hp <= 0 then
+        self.hp = 0
+        self:die()
+    end
 end
 
 function Player:addSp(amount)
