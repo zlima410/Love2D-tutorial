@@ -44,6 +44,7 @@ function Rock:hit(damage)
     self.hp = self.hp - (damage or 100)
     if self.hp <= 0 then
         self.dead = true
+        current_room.score = current_room.score + 100
         self.area:addGameObject('Ammo', self.x, self.y)
         self.area:addGameObject('EnemyDeathEffect', self.x, self.y, {color = hp_color, w = 3*self.w})
     else

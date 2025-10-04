@@ -8,7 +8,7 @@ function Director:new(stage)
     self.round_duration = 22
     self.round_timer = 0
 
-    self.resource_duration = 3
+    self.resource_duration = 16
     self.resource_timer = 0
 
     self.attack_duration = 30

@@ -14,31 +14,12 @@ function Stage:new()
     self.main_canvas = love.graphics.newCanvas(gw, gh)
     self.player = self.area:addGameObject('Player', gw/2, gh/2)
 
-    input:bind('a', function()
-        self.area:addGameObject('Ammo', random(0, gw), random(0, gh))
-    end)
-    input:bind('b', function()
-        self.area:addGameObject('Boost', 0, 0)
-    end)
-    input:bind('h', function()
-        self.area:addGameObject('HealthPoint', 0, 0)
-    end)
-    input:bind('s', function()
-        self.area:addGameObject('SkillPoint', 0, 0)
-    end)
-    input:bind('k', function()
-        self.area:addGameObject('Attack', 0, 0)
-    end)
-    input:bind('r', function()
-        self.area:addGameObject('Rock', 0, 0)
-    end)
-    input:bind('t', function()
-        self.area:addGameObject('Shooter', 0, 0)
-    end)
+    self.score = 0
 end
 
 function Stage:update(dt)
     self.director:update(dt)
+    
     camera.smoother = Camera.smooth.damped(5)
     camera:lockPosition(dt, gw/2, gh/2)
 
@@ -62,4 +43,11 @@ end
 function Stage:destroy()
     self.area:destroy()
     self.area = nil
+    self.player = nil
+end
+
+function Stage:finish()
+    timer:after(1, function()
+        gotoRoom('Stage')
+    end)
 end

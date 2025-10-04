@@ -186,9 +186,11 @@ function Player:update(dt)
         elseif object:is(SkillPoint) then
             object:die()
             self:addSp(1)
+
         elseif object:is(Attack) then
             object:die()
             self:setAttack(object.attack_name)
+            current_room.score = current_room.score + 500
         end
     end
 
@@ -384,14 +386,18 @@ function Player:die()
     for i = 1, love.math.random(8, 12) do
         self.area:addGameObject('ExplodeParticle', self.x, self.y)
     end
+
+    current_room:finish()
 end
 
 function Player:addAmmo(amount)
     self.ammo = math.min(self.ammo + amount, self.max_ammo)
+    current_room.score = current_room.score + 50
 end
 
 function Player:addBoost(amount)
     self.boost = math.min(self.boost + amount, self.max_boost)
+    current_room.score = current_room.score + 150
 end
 
 function Player:addHp(amount)
@@ -408,4 +414,5 @@ end
 
 function Player:addSp(amount)
     sp = math.min(sp + amount, 100)
+    current_room.score = current_room.score + 250
 end
