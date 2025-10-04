@@ -37,7 +37,7 @@ function Player:new(area, x, y, opts)
     -- Attacks
     self.shoot_timer = 0
     self.shoot_cooldown = 0.24
-    self:setAttack('Side')
+    self:setAttack('Neutral')
 
     -- Ship visuals
     self.ship = 'Fighter'
