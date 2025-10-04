@@ -30,6 +30,9 @@ function Stage:new()
     input:bind('r', function()
         self.area:addGameObject('Rock', 0, 0)
     end)
+    input:bind('t', function()
+        self.area:addGameObject('Shooter', 0, 0)
+    end)
 end
 
 function Stage:update(dt)
