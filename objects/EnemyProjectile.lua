@@ -29,6 +29,16 @@ function EnemyProjectile:update(dt)
         end
     end
 
+    if self.collider:enter('Projectile') then
+        local collision_data = self.collider:getEnterCollisionData('Projectile')
+        local object = collision_data.collider:getObject()
+
+        if object then
+            object:die()
+            self:die()
+        end
+    end
+
     if self.x < 0 then self:die() end
     if self.y < 0 then self:die() end
     if self.x > gw then self:die() end

@@ -3,8 +3,8 @@ Shooter = GameObject:extend()
 function Shooter:new(area, x, y, opts)
     Shooter.super.new(self, area, x, y, opts)
 
-    local direction = table.random({-1, 1})
-    self.x = gw/2 + direction*(gw/2 + 48)
+    local spawn_direction = table.random({-1, 1})
+    self.x = gw/2 + spawn_direction*(gw/2 + 48)
     self.y = random(16, gh - 16)
     
     self.w, self.h = 12, 6
@@ -12,9 +12,9 @@ function Shooter:new(area, x, y, opts)
     self.collider:setPosition(self.x, self.y)
     self.collider:setObject(self)
     self.collider:setCollisionClass('Enemy')
-    self.v = -direction*random(20, 40)
+    self.v = -spawn_direction*random(20, 40)
     self.collider:setFixedRotation(false)
-    self.collider:setAngle(direction == 1 and math.pi or 0)
+    self.collider:setAngle(spawn_direction == 1 and math.pi or 0)
     self.collider:setFixedRotation(true)
     self.collider:setLinearVelocity(self.v, 0)
 
