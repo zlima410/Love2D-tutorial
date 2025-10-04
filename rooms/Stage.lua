@@ -9,6 +9,8 @@ function Stage:new()
     self.area.world:addCollisionClass('Collectable', {ignores = {'Collectable', 'Projectile'}})
     self.area.world:addCollisionClass('EnemyProjectile', {ignores = {'EnemyProjectile', 'Projectile', 'Enemy'}})
 
+    self.director = Director(self)
+
     self.main_canvas = love.graphics.newCanvas(gw, gh)
     self.player = self.area:addGameObject('Player', gw/2, gh/2)
 
@@ -36,6 +38,7 @@ function Stage:new()
 end
 
 function Stage:update(dt)
+    self.director:update(dt)
     camera.smoother = Camera.smooth.damped(5)
     camera:lockPosition(dt, gw/2, gh/2)
 
