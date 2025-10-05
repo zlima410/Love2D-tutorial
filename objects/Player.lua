@@ -9,6 +9,7 @@ function Player:new(area, x, y, opts)
     self.collider:setObject(self)
     self.collider:setCollisionClass('Player')
 
+    -- Movement
     self.r = -math.pi/2
     self.rv = 1.66*math.pi
     self.v = 0
@@ -16,7 +17,9 @@ function Player:new(area, x, y, opts)
     self.max_v = self.base_max_v
     self.a = 100
 
-    self.timer:every(5, function() self:tick() end)
+    -- Cycle
+    self.cycle_timer = 0
+    self.cycle_cooldown = 5
 
     -- Boost
     self.max_boost = 100
@@ -340,6 +343,13 @@ function Player:update(dt)
         end
     end
 
+    -- Cycle
+    self.cycle_timer = self.cycle_timer + dt
+    if self.cycle_timer > self.cycle_cooldown then
+        self.cycle_timer = 0
+        self:cycle()
+    end
+
     -- Boost
     self.boost = math.min(self.boost + 10*dt, self.max_boost)
     self.boost_timer = self.boost_timer + dt
@@ -403,8 +413,8 @@ function Player:destroy()
     Player.super.destroy(self)
 end
 
-function Player:tick()
-    self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
+function Player:cycle()
+    self.area:addGameObject('CycleEffect', self.x, self.y, {parent = self})
 end
 
 function Player:shoot()
