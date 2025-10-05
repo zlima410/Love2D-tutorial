@@ -25,3 +25,9 @@ attacks = {
     ['Back'] = {cooldown = 0.32, ammo = 2, abbreviation = 'Ba', color = skill_point_color},
     ['Side'] = {cooldown = 0.32, ammo = 2, abbreviation = 'Si', color = boost_color},
 }
+
+-- Globals
+skill_points = 0
+
+-- Enemies
+enemies = {'Rock', 'Shooter'}

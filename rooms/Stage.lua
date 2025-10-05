@@ -43,7 +43,7 @@ function Stage:draw()
 
         -- Skill Points
         love.graphics.setColor(skill_point_color)
-        love.graphics.print(sp .. 'SP', 20, 10, 0, 1, 1, math.floor(self.font:getWidth(sp)/2), self.font:getHeight()/2)
+        love.graphics.print(skill_points .. 'SP', 20, 10, 0, 1, 1, math.floor(self.font:getWidth(skill_points)/2), self.font:getHeight()/2)
         love.graphics.setColor(1, 1, 1)
 
         -- HP

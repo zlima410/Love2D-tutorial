@@ -14,7 +14,6 @@ require 'globals'
 
 function love.load()
     time = 0
-    sp = 0
 
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setLineStyle('rough')

@@ -297,6 +297,9 @@ function Player:new(area, x, y, opts)
             {parent = self, r = random(2, 4), d = random(0.1, 0.15), color = self.trail_color}) 
         end
     end)
+
+    -- Multipliers
+    self.hp_multiplier = 1
 end
 
 function Player:update(dt)
@@ -325,7 +328,7 @@ function Player:update(dt)
 
         elseif object:is(SkillPoint) then
             object:die()
-            self:addSp(1)
+            self:addSkillPoint(1)
 
         elseif object:is(Attack) then
             object:die()
@@ -559,7 +562,7 @@ function Player:removeHp(amount)
     end
 end
 
-function Player:addSp(amount)
-    sp = math.min(sp + amount, 100)
+function Player:addSkillPoint(amount)
+    skill_points = math.min(skill_points + amount, 100)
     current_room.score = current_room.score + 250
 end
