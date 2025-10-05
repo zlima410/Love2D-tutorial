@@ -71,34 +71,79 @@ function Player:new(area, x, y, opts)
 
     elseif self.ship == 'Crusader' then
         self.polygons[1] = {
-            self.w, 0, -- 1
-            self.w/2, -self.w/2, -- 2
-            -self.w/2, -self.w/2, -- 3
-            -self.w, 0, -- 4
-            -self.w/2, self.w/2, -- 5
-            self.w/2, self.w/2, -- 6
+            self.w, 0,
+            self.w/2, self.w/2,
+            -self.w/4, self.w/2,
+            -self.w/2, self.w/4,
+            -self.w/2, -self.w/4,
+            -self.w/4, -self.w/2,
+            self.w/2, -self.w/2,
         }
 
         self.polygons[2] = {
-            self.w/2, self.w/2, -- 7
-            self.w/2, self.w, -- 8
-            -3*self.w/4, self.w, -- 9
-            -self.w - self.w/3, self.w/2, -- 10
-            -self.w - self.w/3, 0, -- 11
-            -self.w, 0, -- 12
-            -self.w/2, self.w/2, -- 13
-            self.w/2, self.w/2, -- 14
+            self.w/2, self.w/2,
+            self.w/2, self.w,
+            -self.w/2, self.w,
+            -self.w, self.w/2,
+            -self.w, 0,
+            -self.w/2, 0,
+            -self.w/2, self.w/4,
+            -self.w/4, self.w/2,
         }
 
         self.polygons[3] = {
-            self.w/2, -self.w/2, -- 15
-            self.w/2, -self.w, -- 16
-            -3*self.w/4, -self.w, -- 17
-            -self.w - self.w/3, -self.w/2, -- 18
-            -self.w - self.w/3, 0, -- 19
-            -self.w, 0, -- 20
-            -self.w/2, -self.w/2, -- 21
-            self.w/2, -self.w/2 -- 22
+            self.w/2, -self.w/2,
+            self.w/2, -self.w,
+            -self.w/2, -self.w,
+            -self.w, -self.w/2,
+            -self.w, 0,
+            -self.w/2, 0,
+            -self.w/2, -self.w/4,
+            -self.w/4, -self.w/2,
+        }
+
+    elseif self.ship == 'Rogue' then
+        self.polygons[1] = {
+            self.w, 0,
+            0, -self.w/2,
+            -self.w, 0,
+            0, self.w/2,
+        }
+
+        self.polygons[2] = {
+            self.w/2, -self.w/4,
+            self.w/4, -3*self.w/4,
+            -self.w - self.w/2, -2*self.w,
+            -self.w/2, -self.w/4,
+            0, -self.w/2,
+        }
+
+        self.polygons[3] = {
+            self.w/2, self.w/4,
+            0, self.w/2,
+            -self.w/2, self.w/4,
+            -self.w - self.w/2, 2*self.w,
+            self.w/4, 3*self.w/4,
+        }
+
+    elseif self.ship == 'Bit Hunter' then
+        self.polygons[1] = {
+            self.w, 0,
+            self.w/2, -self.w/2,
+            -self.w, -self.w/2,
+            -self.w/2, 0,
+            -self.w, self.w/2,
+            self.w/2, self.w/2,
+        }
+
+    elseif self.ship == 'Sentinel' then
+        self.polygons[1] = {
+            self.w, 0,
+            0, -self.w,
+            -3*self.w/4, -3*self.w/4,
+            -self.w, 0,
+            -3*self.w/4, 3*self.w/4,
+            0, self.w,
         }
 
     elseif self.ship == 'Striker' then
@@ -133,7 +178,37 @@ function Player:new(area, x, y, opts)
             -self.w/2, -self.w/2,
         }
 
-    
+    elseif self.ship == 'Nuclear' then
+        self.polygons[1] = {
+            self.w, -self.w/4,
+            self.w, self.w/4,
+            self.w - self.w/4, self.w/2,
+            -self.w + self.w/4, self.w/2,
+            -self.w, self.w/4,
+            -self.w, -self.w/4,
+            -self.w + self.w/4, -self.w/2,
+            self.w - self.w/4, -self.w/2,
+        }
+
+    elseif self.ship == 'Cycler' then
+        self.polygons[1] = {
+            self.w, 0,
+            0, self.w,
+            -self.w, 0,
+            0, -self.w,
+        }
+
+    elseif self.ship == 'Wisp' then
+        self.polygons[1] = {
+            self.w, -self.w/4,
+            self.w, self.w/4,
+            self.w/4, self.w,
+            -self.w/4, self.w,
+            -self.w, self.w/4,
+            -self.w, -self.w/4,
+            -self.w/4, -self.w,
+            self.w/4, -self.w,
+        }
     end
 
     self.trail_color = skill_point_color
@@ -147,6 +222,42 @@ function Player:new(area, x, y, opts)
             self.x - 0.9*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r + math.pi/2), 
             self.y - 0.9*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r + math.pi/2), 
             {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+        
+         elseif self.ship == 'Crusader' then
+            self.area:addGameObject('TrailParticle', 
+            self.x - 1.2*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r - math.pi/2), 
+            self.y - 1.2*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r - math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+            self.area:addGameObject('TrailParticle', 
+            self.x - 1.2*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r + math.pi/2), 
+            self.y - 1.2*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r + math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+
+        elseif self.ship == 'Bit Hunter' then
+            self.area:addGameObject('TrailParticle', 
+            self.x - 0.8*self.w*math.cos(self.r), self.y - 0.8*self.w*math.sin(self.r), 
+            {parent = self, r = random(2, 4), d = random(0.1, 0.2), color = self.trail_color}) 
+
+        elseif self.ship == 'Rogue' then
+            self.area:addGameObject('TrailParticle', 
+            self.x - 0.7*self.w*math.cos(self.r) + 0.4*self.w*math.cos(self.r - math.pi/2), 
+            self.y - 0.7*self.w*math.sin(self.r) + 0.4*self.w*math.sin(self.r - math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+            self.area:addGameObject('TrailParticle', 
+            self.x - 0.7*self.w*math.cos(self.r) + 0.4*self.w*math.cos(self.r + math.pi/2), 
+            self.y - 0.7*self.w*math.sin(self.r) + 0.4*self.w*math.sin(self.r + math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+
+        elseif self.ship == 'Sentinel' then
+            self.area:addGameObject('TrailParticle', 
+            self.x - 1.0*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r - math.pi/2), 
+            self.y - 1.0*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r - math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+            self.area:addGameObject('TrailParticle', 
+            self.x - 1.0*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r + math.pi/2), 
+            self.y - 1.0*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r + math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+
         elseif self.ship == 'Striker' then
             self.area:addGameObject('TrailParticle', 
             self.x - 1.0*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r - math.pi/2), 
@@ -156,6 +267,31 @@ function Player:new(area, x, y, opts)
             self.x - 1.0*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r + math.pi/2), 
             self.y - 1.0*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r + math.pi/2), 
             {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+
+        elseif self.ship == 'Nuclear' then
+            self.area:addGameObject('TrailParticle', 
+            self.x - 1*self.w*math.cos(self.r), self.y - 1*self.w*math.sin(self.r), 
+            {parent = self, r = random(2, 4), d = random(0.1, 0.2), color = self.trail_color}) 
+
+        elseif self.ship == 'Cycler' then
+            self.area:addGameObject('TrailParticle', 
+            self.x - 1*self.w*math.cos(self.r), self.y - 1*self.w*math.sin(self.r), 
+            {parent = self, r = random(2, 4), d = random(0.1, 0.2), color = self.trail_color}) 
+
+            self.area:addGameObject('TrailParticle', 
+            self.x - 0.8*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r - math.pi/2), 
+            self.y - 0.8*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r - math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+
+            self.area:addGameObject('TrailParticle', 
+            self.x - 0.8*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r + math.pi/2), 
+            self.y - 0.8*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r + math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+
+        elseif self.ship == 'Wisp' then
+            self.area:addGameObject('TrailParticle', 
+            self.x - 1*self.w*math.cos(self.r), self.y - 1*self.w*math.sin(self.r), 
+            {parent = self, r = random(2, 4), d = random(0.1, 0.15), color = self.trail_color}) 
         end
     end)
 end
@@ -163,6 +299,7 @@ end
 function Player:update(dt)
     Player.super.update(self, dt)
     
+    -- Collision
     if self.x < 0 then self:die() end
     if self.y < 0 then self:die() end
     if self.x > gw then self:die() end
