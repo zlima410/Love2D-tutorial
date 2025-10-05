@@ -298,8 +298,31 @@ function Player:new(area, x, y, opts)
         end
     end)
 
+    -- Flats
+    self.flat_hp = 0
+    self.ammo_gain = 0
+
     -- Multipliers
     self.hp_multiplier = 1
+    self.ammo_multiplier = 1
+    self.boost_multiplier = 1
+
+    -- treeToPlayer(self)
+    self:setStats()
+end
+
+function Player:setStats()
+    -- HP
+    self.max_hp = (self.max_hp + self.flat_hp)*self.hp_multiplier
+    self.hp = self.max_hp
+
+    -- AMMO
+    self.max_ammo = (self.max_ammo + self.ammo_gain)*self.ammo_multiplier
+    self.ammo = self.max_ammo
+
+    -- BOOST
+    self.max_boost = self.max_boost*self.boost_multiplier
+    self.boost = self.max_boost
 end
 
 function Player:update(dt)
