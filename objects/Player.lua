@@ -513,6 +513,10 @@ function Player:shoot()
         self.x + 1.5*d*math.cos(self.r - math.pi/2),
         self.y + 1.5*d*math.sin(self.r - math.pi/2),
         {r = self.r - math.pi/2, attack = self.attack})
+
+    elseif self.attack == 'Homing' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
     end
 
     if self.ammo <= 0 then
