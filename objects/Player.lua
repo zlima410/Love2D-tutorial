@@ -300,6 +300,8 @@ function Player:new(area, x, y, opts)
 
     -- Flats
     self.flat_hp = 0
+    self.flat_ammo = 0
+    self.flat_boost = 0
     self.ammo_gain = 0
 
     -- Multipliers
@@ -317,11 +319,11 @@ function Player:setStats()
     self.hp = self.max_hp
 
     -- AMMO
-    self.max_ammo = (self.max_ammo + self.ammo_gain)*self.ammo_multiplier
+    self.max_ammo = (self.max_ammo + self.flat_ammo)*self.ammo_multiplier
     self.ammo = self.max_ammo
 
     -- BOOST
-    self.max_boost = self.max_boost*self.boost_multiplier
+    self.max_boost = (self.max_boost + self.flat_boost)*self.boost_multiplier
     self.boost = self.max_boost
 end
 
@@ -564,7 +566,7 @@ function Player:die()
 end
 
 function Player:addAmmo(amount)
-    self.ammo = math.min(self.ammo + amount, self.max_ammo)
+    self.ammo = math.min(self.ammo + amount + self.ammo_gain, self.max_ammo)
     current_room.score = current_room.score + 50
 end
 
