@@ -314,7 +314,8 @@ function Player:new(area, x, y, opts)
     self.launch_homing_projectile_on_ammo_pickup_chance = 0
     self.regain_hp_on_ammo_pickup_chance = 0
     self.regain_hp_on_sp_pickup_chance = 0
-    self.spawn_haste_area_on_hp_pickup_chance = 99
+    self.spawn_haste_area_on_hp_pickup_chance = 0
+    self.spawn_haste_area_on_sp_pickup_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -370,6 +371,7 @@ function Player:update(dt)
         elseif object:is(HealthPoint) then
             object:die()
             self:addHp(25)
+            self:onHPPickup()
 
         elseif object:is(SkillPoint) then
             object:die()
@@ -636,6 +638,11 @@ function Player:onSPPickup()
     if self.chances.regain_hp_on_sp_pickup_chance:next() then
         self:addHp(25)
         self.area:addGameObject('InfoText', self.x, self.y, {color = hp_color, text = 'HP Regain!'})
+    end
+
+    if self.chances.spawn_haste_area_on_sp_pickup_chance:next() then
+        self.area:addGameObject('HasteArea', self.x, self.y)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'Haste Area!'})
     end
 end
 
