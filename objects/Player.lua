@@ -313,7 +313,8 @@ function Player:new(area, x, y, opts)
     -- Chances
     self.launch_homing_projectile_on_ammo_pickup_chance = 0
     self.regain_hp_on_ammo_pickup_chance = 0
-    self.regain_hp_on_sp_pickup_chance = 99
+    self.regain_hp_on_sp_pickup_chance = 0
+    self.spawn_haste_area_on_hp_pickup_chance = 99
 
     -- treeToPlayer(self)
     self:setStats()
@@ -345,6 +346,8 @@ end
 
 function Player:update(dt)
     Player.super.update(self, dt)
+
+    -- Stat boosts
     
     -- Collision
     if self.x < 0 then self:die() end
@@ -375,7 +378,7 @@ function Player:update(dt)
 
         elseif object:is(Attack) then
             object:die()
-            self:setAttack(object.attack_name)
+            self:setAttack(object.attack)
             current_room.score = current_room.score + 500
         end
     end
@@ -467,8 +470,10 @@ function Player:shoot()
     local d = 1.2*self.w
     self.area:addGameObject('ShootEffect', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {player = self, d = d})
 
+    local mods = {}
+
     if self.attack == 'Neutral' then
-        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), table.merge({r = self.r, attack = self.attack}, mods))
 
     elseif self.attack == 'Double' then
         self.ammo = self.ammo - attacks[self.attack].ammo
@@ -632,4 +637,23 @@ function Player:onSPPickup()
         self:addHp(25)
         self.area:addGameObject('InfoText', self.x, self.y, {color = hp_color, text = 'HP Regain!'})
     end
+end
+
+function Player:onHPPickup()
+    if self.chances.spawn_haste_area_on_hp_pickup_chance:next() then
+        self.area:addGameObject('HasteArea', self.x, self.y)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'Haste Area!'})
+    end
+end
+
+function Player:enterHasteArea()
+    self.inside_haste_area = true
+    self.pre_haste_aspd_multiplier = self.aspd_multiplier
+    self.aspd_multiplier = self.aspd_multiplier/2
+end
+
+function Player:exitHasteArea()
+    self.inside_haste_area = false
+    self.aspd_multiplier = self.pre_haste_aspd_multiplier
+    self.pre_haste_aspd_multiplier = nil
 end

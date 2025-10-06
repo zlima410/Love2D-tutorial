@@ -16,6 +16,13 @@ function table.random(t)
     return t[love.math.random(1, #t)]
 end
 
+function table.merge(t1, t2)
+    local new_table = {}
+    for k, v in pairs(t2) do new_table[k] = v end
+    for k, v in pairs(t1) do new_table[k] = v end
+    return new_table
+end
+
 function table.randomKey(t, exclude)
     local keys = {}
     for k, _ in pairs(t) do
