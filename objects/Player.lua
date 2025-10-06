@@ -310,7 +310,8 @@ function Player:new(area, x, y, opts)
     self.boost_multiplier = 1
 
     -- Chances
-    self.launch_homing_projectile_on_ammo_pickup_chance = 50
+    self.launch_homing_projectile_on_ammo_pickup_chance = 0
+    self.regain_hp_on_ammo_pickup_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -615,5 +616,10 @@ function Player:onAmmoPickup()
         local d = 1.2*self.w
         self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing'})
         self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
+    end
+
+    if self.chances.regain_hp_on_ammo_pickup_chance:next() then
+        self:addHp(25)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = hp_color, text = 'HP Regain!'})
     end
 end
