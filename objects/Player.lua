@@ -308,10 +308,12 @@ function Player:new(area, x, y, opts)
     self.hp_multiplier = 1
     self.ammo_multiplier = 1
     self.boost_multiplier = 1
+    self.aspd_multiplier = 1
 
     -- Chances
     self.launch_homing_projectile_on_ammo_pickup_chance = 0
     self.regain_hp_on_ammo_pickup_chance = 0
+    self.regain_hp_on_sp_pickup_chance = 99
 
     -- treeToPlayer(self)
     self:setStats()
@@ -369,6 +371,7 @@ function Player:update(dt)
         elseif object:is(SkillPoint) then
             object:die()
             self:addSkillPoint(1)
+            self:onSPPickup()
 
         elseif object:is(Attack) then
             object:die()
@@ -424,7 +427,7 @@ function Player:update(dt)
 
     -- Shoot
     self.shoot_timer = self.shoot_timer + dt
-    if self.shoot_timer > self.shoot_cooldown then
+    if self.shoot_timer > self.shoot_cooldown*self.aspd_multiplier then
         self.shoot_timer = 0
         self:shoot()
     end
@@ -619,6 +622,13 @@ function Player:onAmmoPickup()
     end
 
     if self.chances.regain_hp_on_ammo_pickup_chance:next() then
+        self:addHp(25)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = hp_color, text = 'HP Regain!'})
+    end
+end
+
+function Player:onSPPickup()
+    if self.chances.regain_hp_on_sp_pickup_chance:next() then
         self:addHp(25)
         self.area:addGameObject('InfoText', self.x, self.y, {color = hp_color, text = 'HP Regain!'})
     end
