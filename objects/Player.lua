@@ -327,6 +327,7 @@ function Player:new(area, x, y, opts)
     self.launch_homing_projectile_on_cycle_chance = 0
     self.regain_ammo_on_kill_chance = 0
     self.launch_homing_projectile_on_kill_chance = 0
+    self.regain_boost_on_kill_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -735,6 +736,11 @@ function Player:onKill()
         local d = 1.2*self.w
         self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing'})
         self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
+    end
+
+    if self.chances.regain_boost_on_kill_chance:next() then
+        self:addBoost(40)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = boost_color, text = 'BOOST Regain!'})
     end
 end
 
