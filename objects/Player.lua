@@ -330,7 +330,7 @@ function Player:new(area, x, y, opts)
     self.barrage_on_cycle_chance = 0
     self.mvspd_boost_on_cycle_chance = 0
     self.pspd_boost_on_cycle_chance = 0
-    self.pspd_inhibit_on_cycle_chance = 99
+    self.pspd_inhibit_on_cycle_chance = 0
 
     self.launch_homing_projectile_on_cycle_chance = 0
     self.barrage_on_kill_chance = 0
@@ -339,6 +339,8 @@ function Player:new(area, x, y, opts)
     self.regain_boost_on_kill_chance = 0
     self.spawn_boost_on_kill_chance = 0
     self.gain_aspd_boost_on_kill_chance = 0
+
+    self.launch_homing_projectile_while_boosting_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -440,6 +442,8 @@ function Player:update(dt)
     if self.boost_timer > self.boost_cooldown then self.can_boost = true end
     self.max_v = self.base_max_v
     self.boosting = false
+    if input:pressed('up') and self.boost > 1 and self.can_boost then self:onBoostStart() end
+    if input:released('up') then self:onBoostEnd() end
     if input:down('up') and self.boost > 1 and self.can_boost then
         self.boosting = true
         self.max_v = 1.5*self.base_max_v
@@ -448,8 +452,11 @@ function Player:update(dt)
             self.boosting = false
             self.can_boost = false
             self.boost_timer = 0
+            self:onBoostEnd()
         end
     end
+    if input:pressed('down') and self.boost > 1 and self.can_boost then self:onBoostStart() end
+    if input:released('down') then self:onBoostEnd() end
     if input:down('down') and self.boost > 1 and self.can_boost then 
         self.boosting = true
         self.max_v = 0.5*self.base_max_v
@@ -458,6 +465,7 @@ function Player:update(dt)
             self.boosting = false
             self.can_boost = false
             self.boost_timer = 0
+            self:onBoostEnd()
         end
     end
     self.trail_color = skill_point_color
@@ -798,4 +806,18 @@ function Player:onKill()
         self.area:addGameObject('InfoText', self.x, self.y, 
         {text = 'ASPD Boost!', color = ammo_color})
     end
+end
+
+function Player:onBoostStart()
+    self.timer:every('launch_homing_projectile_while_boosting_chance', 0.2, function()
+        if self.chances.launch_homing_projectile_while_boosting_chance:next() then
+            local d = 1.2*self.w
+            self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing'})
+            self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
+        end
+    end)
+end
+
+function Player:onBoostEnd()
+    self.timer:cancel('launch_homing_projectile_while_boosting_chance')
 end
