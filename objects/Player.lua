@@ -311,6 +311,7 @@ function Player:new(area, x, y, opts)
     self.aspd_multiplier = Stat(1)
     self.mvspd_multiplier = Stat(1)
     self.pspd_multiplier = Stat(1)
+    self.cycle_speed_multiplier = Stat(1)
 
     -- Chances
     self.launch_homing_projectile_on_ammo_pickup_chance = 0
@@ -385,6 +386,9 @@ function Player:update(dt)
     if self.pspd_inhibiting then self.pspd_multiplier:decrease(50) end
     self.pspd_multiplier:update(dt)
 
+    if self.cycle_speed_boosting then self.cycle_speed_multiplier:increase(100) end
+    self.cycle_speed_multiplier:update(dt)
+
     -- Collision
     if self.x < 0 then self:die() end
     if self.y < 0 then self:die() end
@@ -431,7 +435,7 @@ function Player:update(dt)
 
     -- Cycle
     self.cycle_timer = self.cycle_timer + dt
-    if self.cycle_timer > self.cycle_cooldown then
+    if self.cycle_timer > self.cycle_cooldown/self.cycle_speed_multiplier.value then
         self.cycle_timer = 0
         self:cycle()
     end
