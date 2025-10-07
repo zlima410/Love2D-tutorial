@@ -325,6 +325,7 @@ function Player:new(area, x, y, opts)
     self.spawn_haste_area_on_cycle_chance = 0
     self.barrage_on_cycle_chance = 0
     self.launch_homing_projectile_on_cycle_chance = 0
+    self.regain_ammo_on_kill_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -681,7 +682,7 @@ function Player:onCycle()
 
     if self.chances.regain_full_ammo_on_cycle_chance:next() then
         self:addAmmo(self.max_ammo)
-        self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'Full Ammo!'})
+        self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'Full AMMO!'})
     end
 
     if self.chances.change_attack_on_cycle_chance:next() then
@@ -722,6 +723,11 @@ function Player:onKill()
             end)
         end
         self.area:addGameObject('InfoText', self.x, self.y, {text = 'Barrage!!!'})
+    end
+
+    if self.chances.regain_ammo_on_kill_chance:next() then
+        self:addAmmo(20)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'AMMO Regain!'})
     end
 end
 
