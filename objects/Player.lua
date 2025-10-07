@@ -344,7 +344,8 @@ function Player:new(area, x, y, opts)
     self.launch_homing_projectile_while_boosting_chance = 0
 
     -- Booleans
-    self.increased_cycle_speed_while_boosting = true
+    self.increased_cycle_speed_while_boosting = false
+    self.invulnerability_while_boosting = false
 
     -- treeToPlayer(self)
     self:setStats()
@@ -478,6 +479,12 @@ function Player:update(dt)
     end
     self.trail_color = skill_point_color
     if self.boosting then self.trail_color = boost_color end
+
+    if self.invulnerability_while_boosting and self.boosting then
+        self.invincible = true
+    elseif self.invulnerability_while_boosting and not self.boosting then
+        self.invincible = false
+    end
 
     -- Shoot
     self.shoot_timer = self.shoot_timer + dt
