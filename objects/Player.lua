@@ -313,21 +313,26 @@ function Player:new(area, x, y, opts)
     -- Chances
     self.launch_homing_projectile_on_ammo_pickup_chance = 0
     self.regain_hp_on_ammo_pickup_chance = 0
+
     self.regain_hp_on_sp_pickup_chance = 0
-    self.spawn_haste_area_on_hp_pickup_chance = 0
     self.spawn_haste_area_on_sp_pickup_chance = 0
+
+    self.spawn_haste_area_on_hp_pickup_chance = 0
+
     self.spawn_sp_on_cycle_chance = 0
-    self.barrage_on_kill_chance = 0
     self.spawn_hp_on_cycle_chance = 0
     self.regain_hp_on_cycle_chance = 0
     self.regain_full_ammo_on_cycle_chance = 0
     self.change_attack_on_cycle_chance = 0
     self.spawn_haste_area_on_cycle_chance = 0
     self.barrage_on_cycle_chance = 0
+
     self.launch_homing_projectile_on_cycle_chance = 0
+    self.barrage_on_kill_chance = 0
     self.regain_ammo_on_kill_chance = 0
     self.launch_homing_projectile_on_kill_chance = 0
     self.regain_boost_on_kill_chance = 0
+    self.spawn_boost_on_kill_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -741,6 +746,11 @@ function Player:onKill()
     if self.chances.regain_boost_on_kill_chance:next() then
         self:addBoost(40)
         self.area:addGameObject('InfoText', self.x, self.y, {color = boost_color, text = 'BOOST Regain!'})
+    end
+
+    if self.chances.spawn_boost_on_kill_chance:next() then
+        self.area:addGameObject('Boost', self.x, self.y)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = boost_color, text = 'BOOST Spawn!'})
     end
 end
 
