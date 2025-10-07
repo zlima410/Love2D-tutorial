@@ -326,6 +326,7 @@ function Player:new(area, x, y, opts)
     self.barrage_on_cycle_chance = 0
     self.launch_homing_projectile_on_cycle_chance = 0
     self.regain_ammo_on_kill_chance = 0
+    self.launch_homing_projectile_on_kill_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -728,6 +729,12 @@ function Player:onKill()
     if self.chances.regain_ammo_on_kill_chance:next() then
         self:addAmmo(20)
         self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'AMMO Regain!'})
+    end
+
+    if self.chances.launch_homing_projectile_on_kill_chance:next() then
+        local d = 1.2*self.w
+        self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing'})
+        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
     end
 end
 
