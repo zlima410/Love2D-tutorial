@@ -324,6 +324,7 @@ function Player:new(area, x, y, opts)
     self.change_attack_on_cycle_chance = 0
     self.spawn_haste_area_on_cycle_chance = 0
     self.barrage_on_cycle_chance = 0
+    self.launch_homing_projectile_on_cycle_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -702,6 +703,12 @@ function Player:onCycle()
             end)
         end
         self.area:addGameObject('InfoText', self.x, self.y, {text = 'Barrage!!!'})
+    end
+
+    if self.chances.launch_homing_projectile_on_cycle_chance:next() then
+        local d = 1.2*self.w
+        self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing'})
+        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
     end
 end
 
