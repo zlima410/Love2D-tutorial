@@ -310,6 +310,7 @@ function Player:new(area, x, y, opts)
     self.boost_multiplier = 1
     self.aspd_multiplier = Stat(1)
     self.mvspd_multiplier = Stat(1)
+    self.pspd_multiplier = Stat(1)
 
     -- Chances
     self.launch_homing_projectile_on_ammo_pickup_chance = 0
@@ -328,6 +329,8 @@ function Player:new(area, x, y, opts)
     self.spawn_haste_area_on_cycle_chance = 0
     self.barrage_on_cycle_chance = 0
     self.mvspd_boost_on_cycle_chance = 0
+    self.pspd_boost_on_cycle_chance = 0
+    self.pspd_inhibit_on_cycle_chance = 99
 
     self.launch_homing_projectile_on_cycle_chance = 0
     self.barrage_on_kill_chance = 0
@@ -375,6 +378,10 @@ function Player:update(dt)
 
     if self.mvspd_boosting then self.mvspd_multiplier:increase(50) end
     self.mvspd_multiplier:update(dt)
+
+    if self.pspd_boosting then self.pspd_multiplier:increase(100) end
+    if self.pspd_inhibiting then self.pspd_multiplier:decrease(50) end
+    self.pspd_multiplier:update(dt)
 
     -- Collision
     if self.x < 0 then self:die() end
@@ -499,7 +506,9 @@ function Player:shoot()
     local d = 1.2*self.w
     self.area:addGameObject('ShootEffect', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {player = self, d = d})
 
-    local mods = {}
+    local mods = {
+        v = 200*self.pspd_multiplier.value
+    }
 
     if self.attack == 'Neutral' then
         self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), table.merge({r = self.r, attack = self.attack}, mods))
@@ -509,66 +518,66 @@ function Player:shoot()
         self.area:addGameObject('Projectile',
         self.x + 1.5*d*math.cos(self.r + math.pi/12),
         self.y + 1.5*d*math.sin(self.r + math.pi/12),
-        {r = self.r + math.pi/12, attack = self.attack})
+        table.merge({r = self.r + math.pi/12, attack = self.attack}, mods))
         
         self.area:addGameObject('Projectile',
         self.x + 1.5*d*math.cos(self.r - math.pi/12),
         self.y + 1.5*d*math.sin(self.r - math.pi/12),
-        {r = self.r - math.pi/12, attack = self.attack})
+        table.merge({r = self.r - math.pi/12, attack = self.attack}, mods))
 
     elseif self.attack == 'Triple' then
         self.ammo = self.ammo - attacks[self.attack].ammo
-        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), table.merge({r = self.r, attack = self.attack}, mods))
 
         self.area:addGameObject('Projectile',
         self.x + 1.5*d*math.cos(self.r + math.pi/12),
         self.y + 1.5*d*math.sin(self.r + math.pi/12),
-        {r = self.r + math.pi/12, attack = self.attack})
+        table.merge({r = self.r + math.pi/12, attack = self.attack}, mods))
         
         self.area:addGameObject('Projectile',
         self.x + 1.5*d*math.cos(self.r - math.pi/12),
         self.y + 1.5*d*math.sin(self.r - math.pi/12),
-        {r = self.r - math.pi/12, attack = self.attack})
+        table.merge({r = self.r - math.pi/12, attack = self.attack}, mods))
 
     elseif self.attack == 'Rapid' then
         self.ammo = self.ammo - attacks[self.attack].ammo
-        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), table.merge({r = self.r, attack = self.attack}, mods))
 
     elseif self.attack == 'Spread' then
         local random_dir = random(-math.pi/8, math.pi/8)
         self.ammo = self.ammo - attacks[self.attack].ammo
         self.color = table.random(all_colors)
-        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r + random_dir), self.y + 1.5*d*math.sin(self.r + random_dir), {r = self.r + random_dir, attack = self.attack})
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r + random_dir), self.y + 1.5*d*math.sin(self.r + random_dir), table.merge({r = self.r + random_dir, attack = self.attack}, mods))
 
     elseif self.attack == 'Back' then
         self.ammo = self.ammo - attacks[self.attack].ammo
         self.area:addGameObject('Projectile',
         self.x + 1.5*d*math.cos(self.r),
         self.y + 1.5*d*math.sin(self.r),
-        {r = self.r, attack = self.attack})
+        table.merge({r = self.r, attack = self.attack}, mods))
         
         self.area:addGameObject('Projectile',
         self.x + 1.5*d*math.cos(self.r + math.pi),
         self.y + 1.5*d*math.sin(self.r + math.pi),
-        {r = self.r + math.pi, attack = self.attack})
+        table.merge({r = self.r + math.pi, attack = self.attack}, mods))
 
     elseif self.attack == 'Side' then
         self.ammo = self.ammo - attacks[self.attack].ammo
-        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), table.merge({r = self.r, attack = self.attack}, mods))
 
         self.area:addGameObject('Projectile',
         self.x + 1.5*d*math.cos(self.r + math.pi/2),
         self.y + 1.5*d*math.sin(self.r + math.pi/2),
-        {r = self.r + math.pi/2, attack = self.attack})
+        table.merge({r = self.r + math.pi/2, attack = self.attack}, mods))
         
         self.area:addGameObject('Projectile',
         self.x + 1.5*d*math.cos(self.r - math.pi/2),
         self.y + 1.5*d*math.sin(self.r - math.pi/2),
-        {r = self.r - math.pi/2, attack = self.attack})
+        table.merge({r = self.r - math.pi/2, attack = self.attack}, mods))
 
     elseif self.attack == 'Homing' then
         self.ammo = self.ammo - attacks[self.attack].ammo
-        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), table.merge({r = self.r, attack = self.attack}, mods))
     end
 
     if self.ammo <= 0 then
@@ -733,6 +742,20 @@ function Player:onCycle()
         self.timer:after(4, function() self.mvspd_boosting = false end)
         self.area:addGameObject('InfoText', self.x, self.y, 
         {text = 'MVSPD Boost!', color = boost_color})
+    end
+
+    if self.chances.pspd_boost_on_cycle_chance:next() then
+        self.pspd_boosting = true
+        self.timer:after(4, function() self.pspd_boosting = false end)
+        self.area:addGameObject('InfoText', self.x, self.y, 
+        {text = 'PSPD Boost!', color = attacks[self.attack].color})
+    end
+
+    if self.chances.pspd_inhibit_on_cycle_chance:next() then
+        self.pspd_inhibiting = true
+        self.timer:after(4, function() self.pspd_inhibiting = false end)
+        self.area:addGameObject('InfoText', self.x, self.y, 
+        {text = 'PSPD Inhibit!', color = attacks[self.attack].color})
     end
 end
 
