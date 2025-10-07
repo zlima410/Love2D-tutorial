@@ -343,6 +343,9 @@ function Player:new(area, x, y, opts)
 
     self.launch_homing_projectile_while_boosting_chance = 0
 
+    -- Booleans
+    self.increased_cycle_speed_while_boosting = true
+
     -- treeToPlayer(self)
     self:setStats()
     self:generateChances()
@@ -387,6 +390,7 @@ function Player:update(dt)
     self.pspd_multiplier:update(dt)
 
     if self.cycle_speed_boosting then self.cycle_speed_multiplier:increase(100) end
+    if self.increased_cycle_speed_while_boosting and self.boosting then self.cycle_speed_multiplier:increase(200) end
     self.cycle_speed_multiplier:update(dt)
 
     -- Collision
