@@ -319,6 +319,7 @@ function Player:new(area, x, y, opts)
     self.spawn_sp_on_cycle_chance = 0
     self.barrage_on_kill_chance = 0
     self.spawn_hp_on_cycle_chance = 0
+    self.regain_hp_on_cycle_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -666,6 +667,11 @@ function Player:onCycle()
     if self.chances.spawn_hp_on_cycle_chance:next() then
         self.area:addGameObject('HealthPoint', self.x, self.y)
         self.area:addGameObject('InfoText', self.x, self.y, {color = hp_color, text = 'HP Spawn!'})
+    end
+
+    if self.chances.regain_hp_on_cycle_chance:next() then
+        self:addHp(25)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = hp_color, text = 'HP Regain!'})
     end
 end
 
