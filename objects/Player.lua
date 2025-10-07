@@ -322,6 +322,7 @@ function Player:new(area, x, y, opts)
     self.regain_hp_on_cycle_chance = 0
     self.regain_full_ammo_on_cycle_chance = 0
     self.change_attack_on_cycle_chance = 0
+    self.spawn_haste_area_on_cycle_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -684,6 +685,11 @@ function Player:onCycle()
     if self.chances.change_attack_on_cycle_chance:next() then
         self.attack = table.random({'Double', 'Triple', 'Rapid', 'Spread', 'Back', 'Side'})
         self.area:addGameObject('InfoText', self.x, self.y, {color = default_color, text = self.attack .. '!'})
+    end
+
+    if self.chances.spawn_haste_area_on_cycle_chance:next() then
+        self.area:addGameObject('HasteArea', self.x, self.y)
+        self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'Haste Area!'})
     end
 end
 
