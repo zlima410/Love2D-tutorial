@@ -323,6 +323,7 @@ function Player:new(area, x, y, opts)
     self.regain_full_ammo_on_cycle_chance = 0
     self.change_attack_on_cycle_chance = 0
     self.spawn_haste_area_on_cycle_chance = 0
+    self.barrage_on_cycle_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -690,6 +691,17 @@ function Player:onCycle()
     if self.chances.spawn_haste_area_on_cycle_chance:next() then
         self.area:addGameObject('HasteArea', self.x, self.y)
         self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'Haste Area!'})
+    end
+
+    if self.chances.barrage_on_cycle_chance:next() then
+        for i = 1, 8 do
+            self.timer:after((i-1)*0.05, function()
+                local random_angle = random(-math.pi/8, math.pi/8)
+                local d = 2.2*self.w
+                self.area:addGameObject('Projectile', self.x + d*math.cos(self.r + random_angle), self.y + d*math.sin(self.r + random_angle), {r = self.r + random_angle, attack = self.attack})
+            end)
+        end
+        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Barrage!!!'})
     end
 end
 
