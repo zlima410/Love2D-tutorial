@@ -321,6 +321,7 @@ function Player:new(area, x, y, opts)
     self.spawn_hp_on_cycle_chance = 0
     self.regain_hp_on_cycle_chance = 0
     self.regain_full_ammo_on_cycle_chance = 0
+    self.change_attack_on_cycle_chance = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -678,6 +679,11 @@ function Player:onCycle()
     if self.chances.regain_full_ammo_on_cycle_chance:next() then
         self:addAmmo(self.max_ammo)
         self.area:addGameObject('InfoText', self.x, self.y, {color = ammo_color, text = 'Full Ammo!'})
+    end
+
+    if self.chances.change_attack_on_cycle_chance:next() then
+        self.attack = table.random({'Double', 'Triple', 'Rapid', 'Spread', 'Back', 'Side'})
+        self.area:addGameObject('InfoText', self.x, self.y, {color = default_color, text = self.attack .. '!'})
     end
 end
 
